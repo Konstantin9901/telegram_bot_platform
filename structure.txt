@@ -1,0 +1,448 @@
+.
+├── app
+│   ├── analytics
+│   ├── api
+│   │   └── routes
+│   ├── routers
+│   └── services
+├── scripts
+├── tests
+├── venv
+│   ├── bin
+│   ├── include
+│   │   ├── python3.12
+│   │   └── site
+│   │       └── python3.12
+│   │           └── greenlet
+│   ├── lib
+│   │   └── python3.12
+│   │       └── site-packages
+│   │           ├── PIL
+│   │           ├── _pytest
+│   │           │   ├── _code
+│   │           │   ├── _io
+│   │           │   ├── _py
+│   │           │   ├── assertion
+│   │           │   ├── config
+│   │           │   └── mark
+│   │           ├── annotated_types
+│   │           ├── annotated_types-0.7.0.dist-info
+│   │           │   └── licenses
+│   │           ├── anyio
+│   │           │   ├── _backends
+│   │           │   ├── _core
+│   │           │   ├── abc
+│   │           │   └── streams
+│   │           ├── anyio-4.11.0.dist-info
+│   │           │   └── licenses
+│   │           ├── asyncpg
+│   │           │   ├── _testbase
+│   │           │   ├── exceptions
+│   │           │   ├── pgproto
+│   │           │   │   └── codecs
+│   │           │   └── protocol
+│   │           │       ├── codecs
+│   │           │       └── record
+│   │           ├── asyncpg-0.30.0.dist-info
+│   │           ├── certifi
+│   │           ├── certifi-2025.10.5.dist-info
+│   │           │   └── licenses
+│   │           ├── charset_normalizer
+│   │           │   └── cli
+│   │           ├── charset_normalizer-3.4.4.dist-info
+│   │           │   └── licenses
+│   │           ├── click
+│   │           ├── click-8.3.0.dist-info
+│   │           │   └── licenses
+│   │           ├── contourpy
+│   │           │   └── util
+│   │           ├── contourpy-1.3.3.dist-info
+│   │           ├── cycler
+│   │           ├── cycler-0.12.1.dist-info
+│   │           ├── dateutil
+│   │           │   ├── parser
+│   │           │   ├── tz
+│   │           │   └── zoneinfo
+│   │           ├── dns
+│   │           │   ├── dnssecalgs
+│   │           │   ├── quic
+│   │           │   └── rdtypes
+│   │           │       ├── ANY
+│   │           │       ├── CH
+│   │           │       └── IN
+│   │           ├── dnspython-2.8.0.dist-info
+│   │           │   └── licenses
+│   │           ├── dotenv
+│   │           ├── ecdsa
+│   │           ├── ecdsa-0.19.1.dist-info
+│   │           ├── email_validator
+│   │           ├── email_validator-2.3.0.dist-info
+│   │           │   └── licenses
+│   │           ├── fastapi
+│   │           │   ├── _compat
+│   │           │   ├── dependencies
+│   │           │   ├── middleware
+│   │           │   ├── openapi
+│   │           │   └── security
+│   │           ├── fastapi-0.119.1.dist-info
+│   │           │   └── licenses
+│   │           ├── fontTools
+│   │           │   ├── cffLib
+│   │           │   ├── colorLib
+│   │           │   ├── config
+│   │           │   ├── cu2qu
+│   │           │   ├── designspaceLib
+│   │           │   ├── encodings
+│   │           │   ├── feaLib
+│   │           │   ├── merge
+│   │           │   ├── misc
+│   │           │   │   ├── filesystem
+│   │           │   │   └── plistlib
+│   │           │   ├── mtiLib
+│   │           │   ├── otlLib
+│   │           │   │   └── optimize
+│   │           │   ├── pens
+│   │           │   ├── qu2cu
+│   │           │   ├── subset
+│   │           │   ├── svgLib
+│   │           │   │   └── path
+│   │           │   ├── t1Lib
+│   │           │   ├── ttLib
+│   │           │   │   └── tables
+│   │           │   ├── ufoLib
+│   │           │   ├── unicodedata
+│   │           │   ├── varLib
+│   │           │   │   ├── avar
+│   │           │   │   └── instancer
+│   │           │   └── voltLib
+│   │           ├── fonttools-4.60.1.dist-info
+│   │           │   └── licenses
+│   │           ├── greenlet
+│   │           │   ├── platform
+│   │           │   └── tests
+│   │           ├── greenlet-3.2.4.dist-info
+│   │           │   └── licenses
+│   │           ├── h11
+│   │           ├── h11-0.16.0.dist-info
+│   │           │   └── licenses
+│   │           ├── idna
+│   │           ├── idna-3.11.dist-info
+│   │           │   └── licenses
+│   │           ├── iniconfig
+│   │           ├── iniconfig-2.3.0.dist-info
+│   │           │   └── licenses
+│   │           ├── jose
+│   │           │   └── backends
+│   │           ├── kiwisolver
+│   │           ├── kiwisolver-1.4.9.dist-info
+│   │           │   └── licenses
+│   │           ├── matplotlib
+│   │           │   ├── _api
+│   │           │   ├── axes
+│   │           │   ├── backends
+│   │           │   │   ├── qt_editor
+│   │           │   │   └── web_backend
+│   │           │   │       ├── css
+│   │           │   │       └── js
+│   │           │   ├── mpl-data
+│   │           │   │   ├── fonts
+│   │           │   │   │   ├── afm
+│   │           │   │   │   ├── pdfcorefonts
+│   │           │   │   │   └── ttf
+│   │           │   │   ├── images
+│   │           │   │   ├── plot_directive
+│   │           │   │   ├── sample_data
+│   │           │   │   │   └── axes_grid
+│   │           │   │   └── stylelib
+│   │           │   ├── projections
+│   │           │   ├── sphinxext
+│   │           │   ├── style
+│   │           │   ├── testing
+│   │           │   │   └── jpl_units
+│   │           │   ├── tests
+│   │           │   └── tri
+│   │           ├── matplotlib-3.10.7.dist-info
+│   │           ├── mpl_toolkits
+│   │           │   ├── axes_grid1
+│   │           │   │   └── tests
+│   │           │   ├── axisartist
+│   │           │   │   └── tests
+│   │           │   └── mplot3d
+│   │           │       └── tests
+│   │           ├── numpy
+│   │           │   ├── _core
+│   │           │   │   ├── include
+│   │           │   │   │   └── numpy
+│   │           │   │   │       └── random
+│   │           │   │   ├── lib
+│   │           │   │   │   ├── npy-pkg-config
+│   │           │   │   │   └── pkgconfig
+│   │           │   │   └── tests
+│   │           │   │       ├── data
+│   │           │   │       └── examples
+│   │           │   │           ├── cython
+│   │           │   │           └── limited_api
+│   │           │   ├── _pyinstaller
+│   │           │   │   └── tests
+│   │           │   ├── _typing
+│   │           │   ├── _utils
+│   │           │   ├── char
+│   │           │   ├── core
+│   │           │   ├── ctypeslib
+│   │           │   ├── doc
+│   │           │   ├── f2py
+│   │           │   │   ├── _backends
+│   │           │   │   ├── src
+│   │           │   │   └── tests
+│   │           │   │       └── src
+│   │           │   │           ├── abstract_interface
+│   │           │   │           ├── array_from_pyobj
+│   │           │   │           ├── assumed_shape
+│   │           │   │           ├── block_docstring
+│   │           │   │           ├── callback
+│   │           │   │           ├── cli
+│   │           │   │           ├── common
+│   │           │   │           ├── crackfortran
+│   │           │   │           ├── f2cmap
+│   │           │   │           ├── isocintrin
+│   │           │   │           ├── kind
+│   │           │   │           ├── mixed
+│   │           │   │           ├── modules
+│   │           │   │           │   ├── gh25337
+│   │           │   │           │   └── gh26920
+│   │           │   │           ├── negative_bounds
+│   │           │   │           ├── parameter
+│   │           │   │           ├── quoted_character
+│   │           │   │           ├── regression
+│   │           │   │           ├── return_character
+│   │           │   │           ├── return_complex
+│   │           │   │           ├── return_integer
+│   │           │   │           ├── return_logical
+│   │           │   │           ├── return_real
+│   │           │   │           ├── routines
+│   │           │   │           ├── size
+│   │           │   │           ├── string
+│   │           │   │           └── value_attrspec
+│   │           │   ├── fft
+│   │           │   │   └── tests
+│   │           │   ├── lib
+│   │           │   │   └── tests
+│   │           │   │       └── data
+│   │           │   ├── linalg
+│   │           │   │   └── tests
+│   │           │   ├── ma
+│   │           │   │   └── tests
+│   │           │   ├── matrixlib
+│   │           │   │   └── tests
+│   │           │   ├── polynomial
+│   │           │   │   └── tests
+│   │           │   ├── random
+│   │           │   │   ├── _examples
+│   │           │   │   │   ├── cffi
+│   │           │   │   │   ├── cython
+│   │           │   │   │   └── numba
+│   │           │   │   ├── lib
+│   │           │   │   └── tests
+│   │           │   │       └── data
+│   │           │   ├── rec
+│   │           │   ├── strings
+│   │           │   ├── testing
+│   │           │   │   ├── _private
+│   │           │   │   └── tests
+│   │           │   ├── tests
+│   │           │   └── typing
+│   │           │       └── tests
+│   │           │           └── data
+│   │           │               ├── fail
+│   │           │               ├── misc
+│   │           │               ├── pass
+│   │           │               └── reveal
+│   │           ├── numpy-2.3.4.dist-info
+│   │           ├── numpy.libs
+│   │           ├── packaging
+│   │           │   └── licenses
+│   │           ├── packaging-25.0.dist-info
+│   │           │   └── licenses
+│   │           ├── pillow-12.0.0.dist-info
+│   │           │   └── licenses
+│   │           ├── pillow.libs
+│   │           ├── pip
+│   │           │   ├── _internal
+│   │           │   │   ├── cli
+│   │           │   │   ├── commands
+│   │           │   │   ├── distributions
+│   │           │   │   ├── index
+│   │           │   │   ├── locations
+│   │           │   │   ├── metadata
+│   │           │   │   │   └── importlib
+│   │           │   │   ├── models
+│   │           │   │   ├── network
+│   │           │   │   ├── operations
+│   │           │   │   │   ├── build
+│   │           │   │   │   └── install
+│   │           │   │   ├── req
+│   │           │   │   ├── resolution
+│   │           │   │   │   ├── legacy
+│   │           │   │   │   └── resolvelib
+│   │           │   │   ├── utils
+│   │           │   │   └── vcs
+│   │           │   └── _vendor
+│   │           │       ├── cachecontrol
+│   │           │       │   └── caches
+│   │           │       ├── certifi
+│   │           │       ├── chardet
+│   │           │       │   ├── cli
+│   │           │       │   └── metadata
+│   │           │       ├── colorama
+│   │           │       │   └── tests
+│   │           │       ├── distlib
+│   │           │       ├── distro
+│   │           │       ├── idna
+│   │           │       ├── msgpack
+│   │           │       ├── packaging
+│   │           │       ├── pkg_resources
+│   │           │       ├── platformdirs
+│   │           │       ├── pygments
+│   │           │       │   ├── filters
+│   │           │       │   ├── formatters
+│   │           │       │   ├── lexers
+│   │           │       │   └── styles
+│   │           │       ├── pyparsing
+│   │           │       │   └── diagram
+│   │           │       ├── pyproject_hooks
+│   │           │       │   └── _in_process
+│   │           │       ├── requests
+│   │           │       ├── resolvelib
+│   │           │       │   └── compat
+│   │           │       ├── rich
+│   │           │       ├── tenacity
+│   │           │       ├── tomli
+│   │           │       ├── truststore
+│   │           │       ├── urllib3
+│   │           │       │   ├── contrib
+│   │           │       │   │   └── _securetransport
+│   │           │       │   ├── packages
+│   │           │       │   │   └── backports
+│   │           │       │   └── util
+│   │           │       └── webencodings
+│   │           ├── pip-24.0.dist-info
+│   │           ├── pluggy
+│   │           ├── pluggy-1.6.0.dist-info
+│   │           │   └── licenses
+│   │           ├── psycopg2
+│   │           ├── psycopg2_binary-2.9.11.dist-info
+│   │           │   └── licenses
+│   │           ├── psycopg2_binary.libs
+│   │           ├── pyasn1
+│   │           │   ├── codec
+│   │           │   │   ├── ber
+│   │           │   │   ├── cer
+│   │           │   │   ├── der
+│   │           │   │   └── native
+│   │           │   ├── compat
+│   │           │   └── type
+│   │           ├── pyasn1-0.6.1.dist-info
+│   │           ├── pydantic
+│   │           │   ├── _internal
+│   │           │   ├── deprecated
+│   │           │   ├── experimental
+│   │           │   ├── plugin
+│   │           │   └── v1
+│   │           ├── pydantic-2.12.3.dist-info
+│   │           │   └── licenses
+│   │           ├── pydantic_core
+│   │           ├── pydantic_core-2.41.4.dist-info
+│   │           │   └── licenses
+│   │           ├── pydantic_settings
+│   │           │   └── sources
+│   │           │       └── providers
+│   │           ├── pydantic_settings-2.11.0.dist-info
+│   │           │   └── licenses
+│   │           ├── pygments
+│   │           │   ├── filters
+│   │           │   ├── formatters
+│   │           │   ├── lexers
+│   │           │   └── styles
+│   │           ├── pygments-2.19.2.dist-info
+│   │           │   └── licenses
+│   │           ├── pyparsing
+│   │           │   ├── diagram
+│   │           │   └── tools
+│   │           ├── pyparsing-3.2.5.dist-info
+│   │           │   └── licenses
+│   │           ├── pytest
+│   │           ├── pytest-8.4.2.dist-info
+│   │           │   └── licenses
+│   │           ├── python_dateutil-2.9.0.post0.dist-info
+│   │           ├── python_dotenv-1.1.1.dist-info
+│   │           │   └── licenses
+│   │           ├── python_jose-3.5.0.dist-info
+│   │           │   └── licenses
+│   │           ├── requests
+│   │           ├── requests-2.32.5.dist-info
+│   │           │   └── licenses
+│   │           ├── rsa
+│   │           ├── rsa-4.9.1.dist-info
+│   │           ├── six-1.17.0.dist-info
+│   │           ├── sniffio
+│   │           │   └── _tests
+│   │           ├── sniffio-1.3.1.dist-info
+│   │           ├── sqlalchemy
+│   │           │   ├── connectors
+│   │           │   ├── cyextension
+│   │           │   ├── dialects
+│   │           │   │   ├── mssql
+│   │           │   │   ├── mysql
+│   │           │   │   ├── oracle
+│   │           │   │   ├── postgresql
+│   │           │   │   └── sqlite
+│   │           │   ├── engine
+│   │           │   ├── event
+│   │           │   ├── ext
+│   │           │   │   ├── asyncio
+│   │           │   │   ├── declarative
+│   │           │   │   └── mypy
+│   │           │   ├── future
+│   │           │   ├── orm
+│   │           │   ├── pool
+│   │           │   ├── sql
+│   │           │   ├── testing
+│   │           │   │   ├── fixtures
+│   │           │   │   ├── plugin
+│   │           │   │   └── suite
+│   │           │   └── util
+│   │           ├── sqlalchemy-2.0.44.dist-info
+│   │           │   └── licenses
+│   │           ├── starlette
+│   │           │   └── middleware
+│   │           ├── starlette-0.48.0.dist-info
+│   │           │   └── licenses
+│   │           ├── typing_extensions-4.15.0.dist-info
+│   │           │   └── licenses
+│   │           ├── typing_inspection
+│   │           ├── typing_inspection-0.4.2.dist-info
+│   │           │   └── licenses
+│   │           ├── urllib3
+│   │           │   ├── contrib
+│   │           │   │   └── emscripten
+│   │           │   ├── http2
+│   │           │   └── util
+│   │           ├── urllib3-2.5.0.dist-info
+│   │           │   └── licenses
+│   │           ├── uvicorn
+│   │           │   ├── lifespan
+│   │           │   ├── loops
+│   │           │   ├── middleware
+│   │           │   ├── protocols
+│   │           │   │   ├── http
+│   │           │   │   └── websockets
+│   │           │   └── supervisors
+│   │           └── uvicorn-0.38.0.dist-info
+│   │               └── licenses
+│   ├── lib64 -> lib
+│   └── share
+│       └── man
+│           └── man1
+└── webapp
+
+446 directories

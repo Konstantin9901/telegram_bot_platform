@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ROI Аналитика</title>
+  <link rel="stylesheet" href="styles.css" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+  <h1>📊 ROI по дням</h1>
+
+  <div class="filters">
+    <input type="date" id="start-date" />
+    <input type="date" id="end-date" />
+    <select id="campaign-id">
+      <option value="1">Кампания 1</option>
+      <option value="2">Кампания 2</option>
+    </select>
+    <input type="number" id="cost-per-action" placeholder="Стоимость действия" />
+    <button onclick="applyFilters()">Показать</button>
+  </div>
+
+  <table id="roi-table">
+    <thead>
+      <tr>
+        <th>Дата</th>
+        <th>Действия</th>
+        <th>Награда</th>
+        <th>ROI (%)</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+
+  <h2>📈 Интерактивный график (Chart.js)</h2>
+  <canvas id="roi-chart"></canvas>
+
+  <h2>🖼️ График PNG (с сервера)</h2>
+  <img id="roi-image" alt="ROI график" style="max-width: 100%; border: 1px solid #ccc;" />
+  <br />
+  <button id="download-png">📥 Скачать PNG</button>
+
+  <script src="app.js"></script>
+</body>
+</html>
+
+

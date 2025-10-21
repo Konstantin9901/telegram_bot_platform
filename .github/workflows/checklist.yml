@@ -1,0 +1,17 @@
+name: Prod Checklist Reminder
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  checklist:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Show checklist
+        run: |
+          echo "🧾 Чеклист продакшн-запуска:"
+          cat docs/prod-launch-checklist.md

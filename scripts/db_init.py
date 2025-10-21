@@ -1,0 +1,7 @@
+# scripts/db_init.py
+
+from app.database import Base, engine
+from app import models  # ✅ Импортирует все модели сразу
+
+Base.metadata.create_all(bind=engine)
+print("✅ Все таблицы успешно созданы.")
