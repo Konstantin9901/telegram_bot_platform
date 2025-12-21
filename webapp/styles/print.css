@@ -1,0 +1,22 @@
+@media print {
+  .report-container { display: block; }
+  .report-summary {
+    box-shadow: none;
+    background: white;
+    color: black;
+    padding: 0;
+    page-break-inside: avoid;
+  }
+  canvas,
+  .filter-form,
+  .filter-actions,
+  .toast,
+  #download-chart-png,
+  #download-markdown,
+  #send-report,
+  .theme-toggle { display: none !important; }
+  #roi-table { font-size: 12px; }
+}
+
+
+

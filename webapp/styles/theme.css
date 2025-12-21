@@ -1,0 +1,98 @@
+:root {
+  --bg-color: #f5f7fa;
+  --panel-color: #ffffff;
+  --accent-color: #e0e0e0;
+  --border-color: #ccc;
+  --highlight-color: #0077cc;
+  --text-color: #666;
+  --hover-color: #e6e6e6;
+  --active-color: #d9d9d9;
+  --filter-label-font-size: 12px;
+  --button-bg: var(--panel-color);
+  --font-family: "Inter", "Segoe UI", Arial, sans-serif;
+  --filterbar-height: 64px;
+}
+
+[data-theme="dark"] {
+  --bg-color: #0d1b2a;
+  --panel-color: #1b263b;
+  --accent-color: #415a77;
+  --border-color: #2c3e50;
+  --highlight-color: #778da9;
+  --text-color: #666;
+  --hover-color: #2d3f55;
+  --active-color: #364b63;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  background-color: var(--bg-color);
+  color: var(--text-color);
+  font-family: var(--font-family);
+  box-sizing: border-box;
+}
+
+html, body { overflow-x: hidden; }
+
+h2, h3 {
+  text-align: center;
+  margin: 4px 0;
+  color: var(--highlight-color);
+  font-family: var(--font-family);
+}
+
+.filter-form input,
+.filter-form select,
+.filter-form button,
+.export-btn,
+.dropdown-btn {
+  height: 36px;
+  padding: 0 12px;
+  font-size: 14px;
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  background-color: var(--panel-color);
+  color: var(--text-color);
+  cursor: pointer;
+  transition: background-color 0.2s, color 0.2s, border-color 0.2s;
+  font-family: var(--font-family);
+}
+
+.filter-form button:hover,
+.export-btn:hover,
+.dropdown-btn:hover { background-color: var(--hover-color); }
+
+.filter-form button:active,
+.export-btn:active,
+.dropdown-btn:active { background-color: var(--active-color); }
+
+.filter-form select {
+  appearance: none;
+  background-repeat: no-repeat;
+  background-position: right 8px center;
+  background-size: 12px;
+  padding-right: 28px;
+  color: var(--text-color);
+  background-image: url("data:image/svg+xml;utf8,<svg fill='%23666' height='16' viewBox='0 0 24 24' width='16'><path d='M7 10l5 5 5-5z'/></svg>");
+  font-family: var(--font-family);
+}
+
+[data-theme="dark"] .filter-form select {
+  background-image: url("data:image/svg+xml;utf8,<svg fill='%23666' height='16' viewBox='0 0 24 24' width='16'><path d='M7 10l5 5 5-5z'/></svg>");
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

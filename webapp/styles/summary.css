@@ -1,0 +1,80 @@
+.report-summary {
+  position: relative;
+  z-index: 0;
+  margin: 4px;
+  max-width: 800px;
+  margin-left: auto;
+  margin-right: auto;
+  padding: 4px;
+  background-color: var(--panel-color);
+  border-radius: 6px;
+  box-shadow: 0 0 6px rgba(0, 0, 0, 0.05);
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  align-items: center;
+}
+
+/* 🔹 Горизонтальный layout панели метрики */
+.metric-panel {
+  display: flex;
+  align-items: center;       /* 👈 выравнивание по центру textarea */
+  gap: 12px;
+  flex-wrap: nowrap;
+}
+
+/* 🔹 Левая часть: метрика */
+.metric-indicator-block {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+}
+
+/* 🔹 Центр: заголовок + текст отчёта */
+.roi-summary-inline {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex-grow: 1;              /* 👈 занимает всё доступное пространство */
+  min-width: 200px;
+  max-width: 100%;
+}
+
+/* 🔹 Заголовок "Сводка" с иконкой */
+.roi-summary-title {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 14px;
+  color: var(--text-color);
+  font-weight: 500;
+}
+
+/* 🔹 Текст отчёта */
+#roi-text {
+  font-family: var(--font-family);
+  font-size: 14px;
+  line-height: 1.4;
+  width: 100%;
+  border: none;
+  background: transparent;
+  resize: none;
+  overflow-y: auto;
+  padding: 0;
+  color: var(--text-color);
+  min-height: 4em;     /* минимум 2 строки */
+  max-height: 12em;    /* максимум 6–8 строк */
+  white-space: pre-wrap;
+}
+
+/* 🔹 Правая часть: PNG и экспорт */
+.metric-actions {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+
+
+

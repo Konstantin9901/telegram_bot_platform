@@ -2,47 +2,288 @@
 <html lang="ru">
 <head>
   <meta charset="UTF-8" />
+  <title>ROI Insight</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>ROI Аналитика</title>
-  <link rel="stylesheet" href="styles.css" />
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <link rel="icon" href="/favicon.ico" type="image/x-icon" />
+
+  <!-- Базовые стили -->
+  <link rel="stylesheet" href="styles/theme.css">
+  <link rel="stylesheet" href="styles/icons.css">
+
+  <!-- Шрифт Inter из Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500&display=swap" rel="stylesheet">
+
+  <!-- Модульные стили -->
+  <link rel="stylesheet" href="styles/layout.css" />
+  <link rel="stylesheet" href="styles/filters.css" />
+  <link rel="stylesheet" href="styles/summary.css" />
+  <link rel="stylesheet" href="styles/table.css" />
+  <link rel="stylesheet" href="styles/charts.css" />
+  <link rel="stylesheet" href="styles/responsive.css" />
+  <link rel="stylesheet" href="styles/print.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/themes/dark.css">
+  <link rel="stylesheet" href="styles/flatpickr-custom.css">
 </head>
 <body>
-  <h1>📊 ROI по дням</h1>
-
-  <div class="filters">
-    <input type="date" id="start-date" />
-    <input type="date" id="end-date" />
-    <select id="campaign-id">
-      <option value="1">Кампания 1</option>
-      <option value="2">Кампания 2</option>
-    </select>
-    <input type="number" id="cost-per-action" placeholder="Стоимость действия" />
-    <button onclick="applyFilters()">Показать</button>
+  <!-- Кнопка переключения темы -->
+  <div class="theme-toggle">
+    <button id="theme-switch" class="theme-btn">
+      <span class="icon darkmode-icon"></span>
+    </button>
   </div>
 
-  <table id="roi-table">
-    <thead>
-      <tr>
-        <th>Дата</th>
-        <th>Действия</th>
-        <th>Награда</th>
-        <th>ROI (%)</th>
-      </tr>
-    </thead>
-    <tbody></tbody>
-  </table>
+  <!-- ФИЛЬТР-БАР -->
+  <form id="filter-form" class="filter-form">
 
-  <h2>📈 Интерактивный график (Chart.js)</h2>
-  <canvas id="roi-chart"></canvas>
+    <!-- Логотип -->
+    <div class="filter-logo">
+      <div class="logo-wrapper">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" class="logo-svg">
+          <rect x="0" y="0" width="100" height="100" rx="6" fill="black" />
+          <text x="50%" y="56%"
+                text-anchor="middle"
+                dominant-baseline="middle"
+                font-size="62"
+                font-family="Arial, Helvetica, sans-serif"
+                fill="#FFD700"
+                font-weight="bold">
+            XP
+          </text>
+        </svg>
+      </div>
+    </div>
 
-  <h2>🖼️ График PNG (с сервера)</h2>
-  <img id="roi-image" alt="ROI график" style="max-width: 100%; border: 1px solid #ccc;" />
-  <br />
-  <button id="download-png">📥 Скачать PNG</button>
+    <!-- Кампания -->
+    <div class="filter-group">
+      <label for="campaign-dropdown">Кампания</label>
+      <div id="campaign-dropdown" class="dropdown">
+        <button type="button" class="dropdown-btn">
+          Выбрать кампании ▾
+        </button>
+        <ul class="dropdown-menu">
+  <li><span class="campaign-toggle" data-value="1">Кампания 1</span></li>
+  <li><span class="campaign-toggle" data-value="2">Кампания 2</span></li>
+  <li><span class="campaign-toggle" data-value="3">Кампания 3</span></li>
+</ul>
+      </div>
+    </div>
 
-  <script src="app.js"></script>
+    <!-- Начальная дата -->
+    <div class="filter-group date-field">
+      <label for="start-date">Начальная дата</label>
+      <div class="input-with-icon">
+        <input type="text" id="start-date" placeholder="Выберите дату" readonly />
+        <span class="calendar-wrapper">
+          <span class="icon calendar-icon"></span>
+        </span>
+      </div>
+    </div>
+
+    <!-- Конечная дата -->
+    <div class="filter-group date-field">
+      <label for="end-date">Конечная дата</label>
+      <div class="input-with-icon">
+        <input type="text" id="end-date" placeholder="Выберите дату" readonly />
+        <span class="calendar-wrapper">
+          <span class="icon calendar-icon"></span>
+        </span>
+      </div>
+    </div>
+
+    <!-- Стоимость действия -->
+    <div class="filter-group">
+      <label for="cost-per-action">Стоимость действия</label>
+      <div class="input-with-spinner">
+        <input type="number" id="cost-per-action" step="0.01" min="0" value="1.00" />
+        <div class="spinner-icons">
+          <span class="up icon"></span>
+          <span class="down icon"></span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Метрика -->
+    <div class="filter-group">
+      <label for="metric-dropdown">Метрика</label>
+      <div id="metric-dropdown" class="dropdown">
+        <button type="button" class="dropdown-btn" data-value="roi">
+          ROI ▾
+        </button>
+        <ul class="dropdown-menu">
+          <li data-value="roi">ROI %</li>
+          <li data-value="cpa">CPA</li>
+          <li data-value="ctr">CTR (%)</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Кнопка Показать -->
+    <div class="filter-group">
+      <label>&nbsp;</label>
+      <button type="button" id="show-btn" class="icon-btn">
+        <span class="icon search-icon"></span>
+        Показать
+      </button>
+    </div>
+
+    <!-- Кнопка Очистить -->
+    <div class="filter-group">
+      <label>&nbsp;</label>
+      <button type="button" id="clear-btn" class="icon-btn">
+        <span class="icon clear-icon"></span>
+        Очистить
+      </button>
+    </div>
+
+  </form>
+
+  <!-- ПАНЕЛЬ МЕТРИКИ -->
+  <div class="metric-panel">
+    <div class="metric-indicator-block">
+      <h3 id="metric-indicator" class="metric-title icon-label">
+        <span class="icon metrics-icon"></span>
+        Текущая метрика: ROI
+      </h3>
+    </div>
+
+    <div id="roi-summary" class="roi-summary-inline">
+      <div class="roi-summary-title icon-label">
+        <span class="icon summary-icon"></span>
+        <span class="summary-label">Сводка</span>
+      </div>
+      <textarea id="roi-text" readonly></textarea>
+    </div>
+
+    <div class="metric-actions">
+      <button type="button" id="download-chart-png" class="icon-btn">
+        <span class="icon export-icon"></span>
+        PNG
+      </button>
+
+      <div class="dropdown export-dropdown">
+        <button type="button" class="icon-btn export-btn">
+          <span class="icon export-icon"></span>
+          Экспорт ▾
+        </button>
+        <ul class="dropdown-menu">
+          <li id="export-excel">Excel</li>
+          <li id="export-pdf">PDF</li>
+          <li id="export-md">Markdown</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- ГРАФИКИ + ТАБЛИЦА -->
+  <div class="report-container horizontal-layout">
+    <div class="charts-panel">
+  <!-- График ROI -->
+  <div class="chart-card" data-chart="roi">
+    <div class="chart-controls">
+      <button class="chart-btn chart-btn--expand" title="Раскрыть"><span class="icon expand-icon"></span></button>
+      <button class="chart-btn chart-btn--fullscreen" title="Во весь экран"><span class="icon fullscreen-icon"></span></button>
+      <button class="chart-btn chart-btn--collapse" title="В обычный режим"><span class="icon minimize-icon"></span></button>
+    </div>
+    <div class="chart-options">
+      <span class="chart-toggle" data-option="log">Логарифмическая шкала</span>
+      <span class="chart-toggle" data-option="norm">Нормализовать</span>
+      <span class="chart-toggle" data-option="dual">Dual Axis</span>
+    </div>
+    <canvas id="roi-chart" width="800" height="300"></canvas>
+  </div>
+
+  <!-- График CPA -->
+  <div class="chart-card" data-chart="cpa">
+    <div class="chart-controls">
+      <button class="chart-btn chart-btn--expand" title="Раскрыть"><span class="icon expand-icon"></span></button>
+      <button class="chart-btn chart-btn--fullscreen" title="Во весь экран"><span class="icon fullscreen-icon"></span></button>
+      <button class="chart-btn chart-btn--collapse" title="В обычный режим"><span class="icon minimize-icon"></span></button>
+    </div>
+    <div class="chart-options">
+      <span class="chart-toggle" data-option="log">Логарифмическая шкала</span>
+      <span class="chart-toggle" data-option="norm">Нормализовать</span>
+      <span class="chart-toggle" data-option="dual">Dual Axis</span>
+    </div>
+    <canvas id="cpa-chart" width="800" height="300"></canvas>
+  </div>
+
+  <!-- График CTR -->
+  <div class="chart-card" data-chart="ctr">
+    <div class="chart-controls">
+      <button class="chart-btn chart-btn--expand" title="Раскрыть"><span class="icon expand-icon"></span></button>
+      <button class="chart-btn chart-btn--fullscreen" title="Во весь экран"><span class="icon fullscreen-icon"></span></button>
+      <button class="chart-btn chart-btn--collapse" title="В обычный режим"><span class="icon minimize-icon"></span></button>
+    </div>
+    <div class="chart-options">
+      <span class="chart-toggle" data-option="log">Логарифмическая шкала</span>
+      <span class="chart-toggle" data-option="norm">Нормализовать</span>
+      <span class="chart-toggle" data-option="dual">Dual Axis</span>
+    </div>
+    <canvas id="ctr-chart" width="800" height="300"></canvas>
+  </div>
+</div>
+
+    <!-- Таблица -->
+    <div class="table-panel">
+      <div class="table-body">
+        <table id="roi-table">
+          <thead>
+            <tr>
+              <th>Дата</th>
+              <th>Действия</th>
+              <th>Вознаграждение</th>
+              <th>Дневной ROI %</th>
+              <th>CPA</th>
+              <th>CPR %</th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- строки будут подставляться JS -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast -->
+  <div id="toast" class="toast">✅ PNG сохранён</div>
+
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  
+  <!-- SheetJS для Excel -->
+  <script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
+
+  <!-- jsPDF для PDF -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+  <!-- jsPDF AutoTable -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.1/jspdf.plugin.autotable.min.js"></script>
+
+  <!-- Твой JS -->
+  <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+  <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/ru.js"></script>
+  <script type="module" src="app.js"></script>
 </body>
 </html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
