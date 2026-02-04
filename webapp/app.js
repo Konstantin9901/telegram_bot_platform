@@ -857,29 +857,47 @@ window.addEventListener('DOMContentLoaded', () => {
       exportDropdown.classList.remove("open");
     });
 
-    document.getElementById("export-pdf").addEventListener("click", () => {
-      const { jsPDF } = window.jspdf;
-      const doc = new jsPDF();
-      doc.setFontSize(16);
-      doc.text("ROI Report", 14, 20);
-      const summary = document.getElementById("roi-summary").textContent || "Нет данных";
-      doc.setFontSize(12);
-      doc.text(summary, 14, 30);
-      const table = document.getElementById("roi-table");
-      if (table) {
-        doc.autoTable({
-          html: "#roi-table",
-          startY: 40,
-          styles: { fontSize: 10 },
-          headStyles: { fillColor: [0, 119, 204] },
-        });
-      }
+    /// 📄 Экспорт PDF (синхронизирован с Excel и Markdown, без кракозябр)
+const API_BASE_URL = "http://127.0.0.1:8000"; // dev
+// const API_BASE_URL = window.location.origin; // prod
 
-      doc.save("roi-report.pdf");
-      showToast("📄 PDF сохранён");
-      logEvent("📄 Пользователь выгрузил PDF");
-      exportDropdown.classList.remove("open");
-    });
+document.getElementById("export-pdf").addEventListener("click", async () => {
+  const summary = document.getElementById("roi-summary").textContent;
+
+  const table = document.getElementById("roi-table");
+  const rows = Array.from(table.querySelectorAll("tr")).map(tr =>
+    Array.from(tr.querySelectorAll("td, th")).map(td => td.textContent)
+  );
+
+  const payload = encodeURIComponent(JSON.stringify(rows));
+  const summaryEncoded = encodeURIComponent(summary);
+
+  const response = await fetch(`${API_BASE_URL}/export/pdf`, {
+  method: "POST",
+  headers: { "Content-Type": "application/json; charset=utf-8" },
+  body: JSON.stringify({
+    summary,
+    rows: rows.map(r => ({ name: r[0], roi: r[1] }))
+  })
+});
+
+if (!response.ok) {
+  showToast("⚠️ Ошибка при формировании PDF");
+  return;
+}
+
+const blob = await response.blob();
+const url = window.URL.createObjectURL(blob);
+const link = document.createElement("a");
+link.href = url;
+link.download = "roi-report.pdf";
+link.click();
+window.URL.revokeObjectURL(url);
+
+  showToast("📄 PDF сформирован из актуальных данных");
+  logEvent("📄 Пользователь выгрузил PDF отчёт");
+  exportDropdown.classList.remove("open");
+});
 
     document.getElementById("export-md").addEventListener("click", () => {
       const content = document.getElementById("roi-summary").textContent;
