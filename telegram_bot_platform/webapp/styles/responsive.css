@@ -1,0 +1,14 @@
+@media (max-width: 768px) {
+  .report-container { flex-direction: column; }
+  .charts-panel { flex-direction: row; flex-wrap: wrap; gap: 4px; }
+  .charts-panel canvas {
+    width: 100% !important;
+    height: auto !important;
+    max-height: 300px;
+  }
+  .report-summary { margin: 4px; padding: 4px; }
+}
+
+
+
+

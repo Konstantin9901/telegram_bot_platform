@@ -1,49 +1,78 @@
-from fastapi import FastAPI, Depends, HTTPException
+from fastapi import FastAPI, Body
+from fastapi.responses import FileResponse
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import HTMLResponse
+from jinja2 import Environment, FileSystemLoader
+from weasyprint import HTML, CSS
+from pathlib import Path
 from fastapi.staticfiles import StaticFiles
 
-from app.config import settings
-from app.routers import auth, campaigns, stats, payments
+# 🔗 Импортируем роутер analytics
 from app.api.routes import analytics
-from app.dependencies import get_current_advertiser
 
 app = FastAPI()
 
-# ✅ Сначала подключаем API-модули
-app.include_router(auth.router)
-app.include_router(campaigns.router)
-app.include_router(stats.router)
-app.include_router(payments.router)
+# Подключаем роутер из analytics.py
 app.include_router(analytics.router)
 
-# ✅ Затем подключаем фронтенд
-app.mount("/", StaticFiles(directory="webapp", html=True), name="static")
+# Путь к шаблонам (корень проекта/templates)
+BASE_DIR = Path(__file__).resolve().parent.parent
+TEMPLATES_DIR = BASE_DIR / "templates"
+env = Environment(loader=FileSystemLoader(str(TEMPLATES_DIR)))
 
-# ✅ Корневой маршрут для проверки доступности API (можно удалить, если index.html уже отдается)
-@app.get("/check", response_class=HTMLResponse)
-def root():
-    return "<h1>🚀 API работает</h1>"
+@app.post("/export/pdf")
+def export_pdf(payload: dict = Body(...)):
+    metric = payload.get("metric", "roi")
+    summary = payload.get("summary", "")
+    rows = payload.get("rows", [])
+    campaigns = payload.get("campaigns", [])
 
-# ✅ Включаем CORS для локального теста
+    template = env.get_template("report.html")
+    html_content = template.render(
+        metric=metric.upper(),
+        summary=summary,
+        rows=rows,
+        campaigns=campaigns
+    )
+
+    pdf_file = f"{metric}-report.pdf"
+    HTML(string=html_content, base_url=str(TEMPLATES_DIR)).write_pdf(
+        pdf_file,
+        stylesheets=[CSS(string="""
+            body { font-family: "DejaVu Sans", sans-serif; }
+            table, th, td { font-family: "DejaVu Sans", sans-serif; }
+        """)]
+    )
+
+    return FileResponse(pdf_file, media_type="application/pdf", filename=pdf_file)
+
+# ✅ Подключаем фронтенд (дашборд)
+app.mount("/", StaticFiles(directory="webapp", html=True), name="webapp")
+
+# ✅ Проверка API
+@app.get("/check")
+def check():
+    return {"status": "ok", "message": "API живой и готов к работе"}
+
+# ✅ CORS
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # ← на проде замени на ["https://web.telegram.org"]
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-# ✅ Защищённый маршрут /me с полной отладкой через get_current_advertiser
-@app.get("/me")
-def read_me(advertiser=Depends(get_current_advertiser)):
-    return {
-        "message": "✅ Авторизация успешна",
-        "user": {
-            "id": advertiser.id,
-            "email": advertiser.email
-        }
-    }
+
+
+
+
+
+
+
+
+
+
+
 
 
 

@@ -1,0 +1,268 @@
+/* 📈 Графики */
+canvas {
+  display: block;
+  margin: 0 auto 4px;
+  max-width: 100%;
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  background-color: var(--panel-color);
+}
+
+.charts-panel canvas {
+  display: block;
+  margin: 0 auto;
+  border: none;
+  height: 300px !important;
+  max-height: 300px;
+}
+
+.chart-title {
+  text-align: center;
+  margin: 4px 0;
+  color: var(--highlight-color);
+}
+
+/* 🌀 Анимация появления */
+.fade-in {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+.fade-in.visible { opacity: 1; transform: translateY(0); }
+
+/* ✅ Уведомление */
+.toast {
+  position: fixed;
+  bottom: 2rem;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: var(--highlight-color);
+  color: white;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  font-size: 14px;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  z-index: 1000;
+}
+.toast.show { opacity: 1; }
+
+/* === Глобальное меню экспорта === */
+#global-export-menu {
+  position: absolute;
+  min-width: 180px;
+  background: var(--panel-color);
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+  z-index: 6000;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  max-height: 0;
+  opacity: 0;
+  transform: translateY(-8px);
+  transition: max-height 220ms ease, opacity 180ms ease, transform 220ms ease;
+  pointer-events: none;
+}
+
+#global-export-menu.open {
+  max-height: 500px;
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+
+#global-export-menu button {
+  background: var(--panel-color);
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  padding: 6px 12px;
+  text-align: left;
+  width: 100%;
+  cursor: pointer;
+  font-size: 14px;
+  color: var(--text-color);
+  transition: background-color 0.2s ease;
+}
+
+#global-export-menu button:hover {
+  background: var(--hover-color);
+}
+
+#global-export-menu button:active {
+  background: var(--active-color);
+}
+
+/* === Карточка графика и панель кнопок === */
+.chart-card {
+  position: relative;
+  display: flex;
+  flex-direction: column; /* элементы сверху вниз */
+  align-items: stretch;
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  background: var(--panel-color);
+  padding: 4px;
+  transition: opacity 0.5s ease, transform 0.5s ease;
+}
+
+.chart-controls {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  display: flex;
+  gap: 6px;
+  z-index: 10;
+}
+
+.chart-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  background: var(--panel-color);
+  cursor: pointer;
+  transition: transform 0.2s ease, background 0.2s ease;
+}
+.chart-btn:hover { transform: scale(1.06); background: var(--hover-color); }
+.chart-btn:active { background: var(--active-color); }
+
+/* === Иконки для кнопок управления === */
+.expand-icon {
+  -webkit-mask: url("../assets/icons/expand.svg") no-repeat center / contain;
+  mask: url("../assets/icons/expand.svg") no-repeat center / contain;
+  background-color: var(--text-color);
+}
+.collapse-icon {
+  -webkit-mask: url("../assets/icons/collapse.svg") no-repeat center / contain;
+  mask: url("../assets/icons/collapse.svg") no-repeat center / contain;
+  background-color: var(--text-color);
+}
+.fullscreen-icon {
+  -webkit-mask: url("../assets/icons/Maximize.svg") no-repeat center / contain;
+  mask: url("../assets/icons/Maximize.svg") no-repeat center / contain;
+  background-color: var(--text-color);
+}
+.minimize-icon {
+  -webkit-mask: url("../assets/icons/Minimize.svg") no-repeat center / contain;
+  mask: url("../assets/icons/Minimize.svg") no-repeat center / contain;
+  background-color: var(--text-color);
+}
+
+/* === Состояния карточек === */
+.chart-card.hidden {
+  opacity: 0;
+  transform: scale(0.95) translateY(20px);
+  pointer-events: none;
+}
+
+/* Expanded режим */
+.report-container.mode-expanded {
+  display: flex;
+  flex-direction: row;
+}
+.report-container.mode-expanded .table-panel {
+  display: none;
+}
+.report-container.mode-expanded .chart-card {
+  display: none;
+}
+.report-container.mode-expanded .chart-card.active {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  max-height: 600px;       /* ограничитель, можно подобрать под макет */
+  align-items: stretch;
+}
+
+.report-container.mode-expanded .chart-card.active canvas {
+  flex: 1 1 auto;
+  width: 100% !important;
+  height: auto !important;
+  max-height: 100%;        /* не больше высоты карточки */
+}
+
+/* Fullscreen режим */
+html, body {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+.chart-card.fullscreen {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  z-index: 9999;
+  margin: 0;
+  border-radius: 0;
+  background: var(--panel-color);
+  padding: 0 24px 48px 24px; /* справа и снизу резервируем место */
+  box-sizing: border-box;
+}
+
+.chart-card.fullscreen canvas {
+  width: 100% !important;
+  height: 100% !important;
+  max-height: none;
+  display: block;
+}
+
+/* Управление видимостью кнопок */
+.chart-card:not(.active):not(.fullscreen) .chart-btn.chart-btn--collapse { display: none; }
+.chart-card.active .chart-btn.chart-btn--expand,
+.chart-card.active .chart-btn.chart-btn--fullscreen { display: none; }
+.chart-card.fullscreen .chart-btn.chart-btn--expand,
+.chart-card.fullscreen .chart-btn.chart-btn--fullscreen { display: none; }
+.chart-card.active .chart-btn.chart-btn--collapse,
+.chart-card.fullscreen .chart-btn.chart-btn--collapse { display: inline-flex; }
+
+/* === Панель опций графика (локальные переключатели) === */
+.chart-options {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  padding: 6px 8px;
+  font-size: 13px;
+  color: var(--text-color);
+  background: transparent;   /* убираем фон */
+  border: none;              /* убираем рамку */
+  border-radius: 0;          /* убираем закругления */
+  margin-bottom: 6px;
+}
+
+.chart-toggle {
+  cursor: pointer;
+  user-select: none;
+  padding: 4px 6px;
+  border-radius: 4px;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.chart-toggle:hover {
+  background-color: var(--hover-color);
+}
+
+.chart-toggle.active {
+  background-color: var(--active-color);
+  color: white;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

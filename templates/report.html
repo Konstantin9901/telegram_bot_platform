@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <title>{{ summary }}</title>
+  <style>
+    body {
+      font-family: "DejaVu Sans", sans-serif;
+      margin: 20px;
+    }
+    h1 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+    }
+    th, td {
+      border: 1px solid #333;
+      padding: 8px;
+      text-align: left;
+    }
+    th {
+      background-color: #f2f2f2;
+    }
+  </style>
+</head>
+<body>
+  <h1>{{ summary }}</h1>
+  <table>
+    <tr>
+      <th>Название кампании</th>
+      <th>ROI</th>
+    </tr>
+    {% for row in rows %}
+    <tr>
+      <td>{{ row.name }}</td>
+      <td>{{ row.roi }}</td>
+    </tr>
+    {% endfor %}
+  </table>
+</body>
+</html>
+
+
+
+
+
+

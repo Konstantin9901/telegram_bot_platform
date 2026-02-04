@@ -225,15 +225,9 @@ function renderFallbackChart(canvasId, message) {
   logEvent(`📉 ${message}`);
 }
 
+// === Таблица ===
 function renderTable(data, costPerAction) {
   const tbody = document.querySelector("#roi-table tbody");
-
-  // 📌 Сохраняем состояние раскрытых кампаний
-  const openCampaigns = new Set();
-  tbody.querySelectorAll("tr.campaign-header.active").forEach(header => {
-    openCampaigns.add(header.dataset.campaignId);
-  });
-
   tbody.innerHTML = "";
 
   const filteredData = selectedCampaigns.length > 0
@@ -272,26 +266,44 @@ function renderTable(data, costPerAction) {
     rows.forEach(row => {
       const tr = document.createElement("tr");
       tr.dataset.campaignId = String(campaignId);
-      tr.style.display = "none"; // по умолчанию скрыто
+
+      const roi = parseFloat(row.roi_percent);
+      const roiColor = roi >= 100 ? "#28a745" : "#dc3545";
+
+      const cpa = row.actions > 0 ? row.reward / row.actions : 0;
+      const cpr = row.reward > 0 ? row.actions / row.reward : 0;
+
       tr.innerHTML = `
         <td>${row.date}</td>
         <td>${row.actions}</td>
         <td>${row.reward.toFixed(2)}</td>
-        <td>${row.roi_percent.toFixed(1)}%</td>
-        <td>${(row.reward / (row.actions || 1)).toFixed(2)}</td>
-        <td>${(row.actions / (row.reward || 1)).toFixed(2)}</td>
+        <td style="color:${roiColor}">${roi.toFixed(1)}%</td>
+        <td>${cpa.toFixed(2)}</td>
+        <td>${cpr.toFixed(2)}</td>
       `;
       tbody.appendChild(tr);
     });
-
-    // 📌 Восстанавливаем состояние
-    if (openCampaigns.has(String(campaignId))) {
-      toggleCampaignRows(campaignId);
-    }
   });
 
-  const summary = generateReport(filteredData, costPerAction, getSelectedMetric());
-  document.getElementById("roi-summary").textContent = summary;
+  const metric = getSelectedMetric();
+  const summary = generateReport(filteredData, costPerAction, metric);
+
+  const roiText = document.getElementById("roi-text");
+  if (roiText) {
+    roiText.value = summary;
+    roiText.style.height = "auto";
+    roiText.style.height = roiText.scrollHeight > 0 ? roiText.scrollHeight + "px" : "6em";
+  }
+  const roiSummary = document.getElementById("roi-summary");
+  if (roiSummary) {
+    roiSummary.textContent = summary;
+  }
+
+  document.getElementById("metric-indicator").innerHTML =
+    `<span class="icon metrics-icon"></span> Текущая метрика: ${getLabel(metric)}`;
+
+  localStorage.setItem(`${metric}Report`, summary);
+  logEvent("📋 Отчёт сгенерирован");
 }
 
 // === Управление раскрытием кампаний ===
@@ -381,10 +393,11 @@ function generateReport(data, costPerAction, metric = "roi") {
   data.forEach(row => {
     const key = row.campaign_id || "Без ID";
     if (!grouped[key]) {
-      grouped[key] = { totalActions: 0, totalReward: 0 };
+      grouped[key] = { totalActions: 0, totalReward: 0, days: 0 };
     }
     grouped[key].totalActions += row.actions;
     grouped[key].totalReward += row.reward;
+    grouped[key].days += 1;
   });
 
   let report = ``;
@@ -396,13 +409,13 @@ function generateReport(data, costPerAction, metric = "roi") {
         break;
       }
       case "ctr": {
-        const ctr = stats.totalReward > 0 ? stats.totalActions / stats.totalReward : 0;
-        report += `• Кампания ${id}: CTR = ${ctr.toFixed(2)}\n`;
+        const ctr = stats.days > 0 ? (stats.totalActions / stats.days) * 100 : 0;
+        report += `• Кампания ${id}: CTR ≈ ${ctr.toFixed(1)}% (${stats.days} дней)\n`;
         break;
       }
       default: {
-        const roi = stats.totalActions > 0 ? (stats.totalReward / stats.totalActions) / costPerAction * 100 : 0;
-        report += `• Кампания ${id}: ROI ≈ ${roi.toFixed(1)}% (${stats.totalActions} действий, вознаграждение ${stats.totalReward.toFixed(2)})\n`;
+        const roi = stats.totalActions > 0 ? ((stats.totalReward / stats.totalActions) / costPerAction) * 100 : 0;
+        report += `• Кампания ${id}: ${stats.totalActions} действий, Вознаграждение ${stats.totalReward.toFixed(2)}, Агрегированный ROI ≈ ${roi.toFixed(1)}%\n`;
       }
     }
   });
@@ -502,14 +515,9 @@ function renderMetricChart(data, metric, canvasId, costPerAction) {
       const row = grouped[id].find(r => r.date === date);
       if (!row) return null;
       switch (metric) {
-        case "roi":
-          return row.roi_percent ?? 0;
-        case "cpa":
-          return row.actions > 0 ? row.reward / row.actions : 0;
-        case "ctr":
-          return row.reward > 0 ? row.actions / row.reward : 0;
-        default:
-          return 0;
+        case "cpa": return row.actions > 0 ? row.reward / row.actions : 0;
+        case "ctr": return row.actions; // CTR вычисляется на сервере, здесь placeholder
+        default: return row.roi_percent;
       }
     });
     return {
@@ -542,10 +550,35 @@ function renderMetricChart(data, metric, canvasId, costPerAction) {
   canvas._chart = chartInstance;
   chartInstance._originalDatasets = chartInstance.data.datasets.map(ds => ds.data.slice());
 
+  const state = chartControlsState[metric];
+  if (state.log) chartInstance.options.scales.y.type = "logarithmic";
+  if (state.norm) {
+    chartInstance.data.datasets.forEach((ds, i) => {
+      const base = chartInstance._originalDatasets[i];
+      const max = Math.max(...base.filter(n => n != null));
+      ds.data = base.map(v => (v == null ? null : (max > 0 ? v / max : 0)));
+    });
+  }
+  if (state.dual) {
+    chartInstance.options.scales.y2 = { type: "linear", position: "right", beginAtZero: true, grid: { drawOnChartArea: false } };
+    chartInstance.data.datasets.forEach((ds, i) => {
+      ds.yAxisID = (i % 2 === 0) ? "y" : "y2";
+    });
+  }
+  chartInstance.update();
+
   const cardEl = canvas.closest(".chart-card");
   const metricKey = cardEl?.dataset?.chart;
   if (cardEl && metricKey) {
     attachLocalChartControls(chartInstance, metricKey, cardEl);
+  }
+
+  if (canvasId === "ctr-chart") {
+    const tablePanelEl = document.querySelector(".table-panel");
+    if (tablePanelEl) {
+      syncBottomGap(chartInstance, tablePanelEl);
+      chartInstance.options.onResize = () => syncBottomGap(chartInstance, tablePanelEl);
+    }
   }
 
   if (canvasId === "roi-chart") roiChart = chartInstance;
@@ -613,15 +646,14 @@ function startAutoRefresh(intervalMs = 30000) {
   }, intervalMs);
 }
 
-// === Экспорт Excel ===
+// === Экспорт Excel (серверный) ===
 async function exportExcel() {
   const metric = getSelectedMetric();
-  const params = new URLSearchParams({
-    metric,
-    start_date: document.getElementById("start-date").value,
-    end_date: document.getElementById("end-date").value
+  const params = new URLSearchParams({ 
+    metric, 
+    start_date: document.getElementById("start-date").value, 
+    end_date: document.getElementById("end-date").value 
   });
-  // 📌 Правильная передача кампаний
   selectedCampaigns.forEach(id => params.append("campaign_id", id));
 
   const response = await fetch(`${BASE_URL}/analytics/export/excel?${params}`);
@@ -632,15 +664,16 @@ async function exportExcel() {
   link.download = `${metric}-report.xlsx`;
   link.click();
   showToast("📊 Excel сохранён");
+  logEvent(`📊 Экспортирован ${metric} в Excel`);
 }
 
-// === Экспорт PNG ===
+// === Экспорт PNG (серверный) ===
 async function exportPng() {
   const metric = getSelectedMetric();
-  const params = new URLSearchParams({
-    metric,
-    start_date: document.getElementById("start-date").value,
-    end_date: document.getElementById("end-date").value
+  const params = new URLSearchParams({ 
+    metric, 
+    start_date: document.getElementById("start-date").value, 
+    end_date: document.getElementById("end-date").value 
   });
   selectedCampaigns.forEach(id => params.append("campaign_id", id));
 
@@ -652,15 +685,16 @@ async function exportPng() {
   link.download = `${metric}-plot.png`;
   link.click();
   showToast("🖼️ PNG сохранён");
+  logEvent(`🖼️ Экспортирован ${metric} в PNG`);
 }
 
 // === Экспорт Markdown ===
 async function exportMarkdown() {
   const metric = getSelectedMetric();
-  const params = new URLSearchParams({
-    metric,
-    start_date: document.getElementById("start-date").value,
-    end_date: document.getElementById("end-date").value
+  const params = new URLSearchParams({ 
+    metric, 
+    start_date: document.getElementById("start-date").value, 
+    end_date: document.getElementById("end-date").value 
   });
   selectedCampaigns.forEach(id => params.append("campaign_id", id));
 
@@ -672,6 +706,7 @@ async function exportMarkdown() {
   link.download = `${metric}-report.md`;
   link.click();
   showToast("📝 Markdown сохранён");
+  logEvent(`📝 Экспортирован ${metric} в Markdown`);
 }
 
 // === Экспорт PDF ===
@@ -705,6 +740,7 @@ async function exportPdf() {
   window.URL.revokeObjectURL(url);
 
   showToast(`📄 PDF сформирован для метрики ${metric.toUpperCase()}`);
+  logEvent(`📄 Экспортирован ${metric} в PDF`);
 }
 
 // === Анимация появления графиков ===
@@ -724,8 +760,8 @@ const observer = new IntersectionObserver((entries) => {
 
 // === Инициализация ===
 window.addEventListener("DOMContentLoaded", () => {
-  // === Восстановление фильтров и темы ===
   restoreFilters();
+
   const savedTheme = localStorage.getItem("theme");
   applyTheme(savedTheme === "dark");
 
@@ -740,85 +776,49 @@ window.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // === Календарь ===
-  flatpickr("#start-date", { dateFormat: "Y-m-d", locale: "ru" });
-  flatpickr("#end-date", { dateFormat: "Y-m-d", locale: "ru" });
+  flatpickr("#start-date", {
+    dateFormat: "Y-m-d",
+    allowInput: false,
+    locale: "ru"
+  });
+  flatpickr("#end-date", {
+    dateFormat: "Y-m-d",
+    allowInput: false,
+    locale: "ru"
+  });
 
   document.querySelectorAll(".input-with-icon").forEach(group => {
     const input = group.querySelector("input");
     const iconBtn = group.querySelector(".calendar-wrapper");
     if (input && iconBtn) {
       iconBtn.addEventListener("click", () => {
-        if (input._flatpickr) input._flatpickr.open();
+        if (input._flatpickr) {
+          input._flatpickr.open();
+        }
       });
     }
   });
 
-  // === Кампании ===
-  document.querySelectorAll(".campaign-toggle").forEach(el => {
-    el.addEventListener("click", () => {
-      const id = el.dataset.value;
-      if (selectedCampaigns.includes(id)) {
-        selectedCampaigns = selectedCampaigns.filter(c => c !== id);
-        el.classList.remove("active");
-      } else {
-        selectedCampaigns.push(id);
-        el.classList.add("active");
-      }
-    });
-  });
+  applyFilters();
+  startAutoRefresh(30000);
 
-  // === Метрика ===
-  document.querySelectorAll("#metric-dropdown .dropdown-menu li").forEach(li => {
-    li.addEventListener("click", () => {
-      const metric = li.dataset.value;
-      const btn = document.querySelector("#metric-dropdown .dropdown-btn");
-      btn.dataset.value = metric;
-      btn.textContent = `${li.textContent} ▾`;
-      applyFilters();
-    });
-  });
-
-  // === Кнопки управления ===
+  // Кнопки управления
   document.getElementById("show-btn")?.addEventListener("click", () => {
     saveFilters();
     applyFilters();
   });
+
   document.getElementById("clear-btn")?.addEventListener("click", () => {
     localStorage.removeItem("filters");
     document.getElementById("filter-form").reset();
     clearFilters();
   });
 
-  // === Экспорт ===
   document.getElementById("export-excel")?.addEventListener("click", exportExcel);
-  document.getElementById("export-pdf")?.addEventListener("click", exportPdf);
+  document.getElementById("export-png")?.addEventListener("click", exportPng);
   document.getElementById("export-md")?.addEventListener("click", exportMarkdown);
-  document.getElementById("download-chart-png")?.addEventListener("click", exportPng);
-
-  // === Логика открытия/закрытия меню ===
-  document.querySelectorAll(".dropdown").forEach(dropdown => {
-    const btn = dropdown.querySelector(".dropdown-btn, .export-btn");
-    const menu = dropdown.querySelector(".dropdown-menu");
-    btn.addEventListener("click", () => menu.classList.toggle("show"));
-    document.addEventListener("click", (e) => {
-      if (!dropdown.contains(e.target)) menu.classList.remove("show");
-    });
-  });
-
-  // === Первичная загрузка данных ===
-  applyFilters();
-  startAutoRefresh(30000);
+  document.getElementById("export-pdf")?.addEventListener("click", exportPdf);
 
   logEvent("📦 Инициализация завершена: фильтры/тема/обработчики установлены");
 });
-
-
-
-
-
-
-
-
-
 

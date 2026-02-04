@@ -1,0 +1,94 @@
+/* 📊 Таблица ROI */
+#roi-table {
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  table-layout: fixed;
+  border-collapse: collapse;
+  border-spacing: 0;
+  overflow: hidden;
+  animation: fadeIn 0.6s ease-in;
+}
+
+/* 🧩 Ячейки */
+#roi-table th,
+#roi-table td {
+  padding: 0.4rem 0.5rem;
+  border: 1px solid var(--border-color);
+  text-align: center;
+  background-color: var(--panel-color); /* общий фон */
+  color: var(--text-color);
+  word-wrap: break-word;
+  font-size: 0.85rem;
+}
+
+/* 🔹 Центрирование заголовка "Вознаграждение" */
+#roi-table th:nth-child(3) {
+  white-space: nowrap;
+  text-align: center;
+  vertical-align: middle;
+  padding-left: 0;
+  padding-right: 0;
+}
+
+/* 📐 Минимальные ширины колонок */
+#roi-table th:nth-child(1), #roi-table td:nth-child(1) { min-width: 2rem; }
+#roi-table th:nth-child(2), #roi-table td:nth-child(2) { min-width: 3rem; }
+#roi-table th:nth-child(3), #roi-table td:nth-child(3) { min-width: 6rem; }
+#roi-table th:nth-child(4), #roi-table td:nth-child(4) { min-width: 4rem; }
+#roi-table th:nth-child(5), #roi-table td:nth-child(5) { min-width: 4rem; }
+#roi-table th:nth-child(6), #roi-table td:nth-child(6) { min-width: 4rem; }
+
+/* ❌ Убираем zebra и hover для обычных строк */
+#roi-table tbody tr:nth-child(even) td {
+  background-color: var(--panel-color);
+}
+#roi-table tbody tr:hover td {
+  background-color: var(--panel-color);
+  color: var(--text-color);
+}
+
+/* 📘 Заголовок кампании — базовое состояние */
+#roi-table .campaign-header td {
+  background-color: var(--panel-color);
+  color: var(--text-color);
+  font-weight: normal;
+  cursor: pointer;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+/* 🟨 Hover */
+#roi-table .campaign-header:hover td {
+  background-color: var(--hover-color);
+  color: var(--text-color);
+}
+
+/* ✅ Active — подсветка активного заголовка */
+#roi-table .campaign-header.active td {
+  background-color: var(--hover-color); /* акцентный фон */
+  color: #ffffff;                       /* белый текст */
+  transition: background-color 0.3s, color 0.3s;
+}
+
+/* 🎯 Иконка легенды — прямоугольная */
+#roi-table .campaign-header .legend-icon {
+  display: inline-block;
+  width: 2.4rem;
+  height: 0.6rem;
+  margin-right: 0.4rem;
+  vertical-align: middle;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
